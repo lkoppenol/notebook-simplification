@@ -15,9 +15,9 @@ def plot_specific_image(n, images, labels=None, predictions=None):
     plt.figure()
     plt.imshow(images[n])
     title = f"Image id: {n}"
-    if labels:
+    if labels is not None:
         title += f" - Truth: {labels[n]}"
-    if predictions:
+    if predictions is not None:
         title += f" - Truth: {predictions[n]}"
     plt.title(title)
 
@@ -43,6 +43,7 @@ def explain(variable, name=""):
         sample = sample[:77] + "..."
     print("Sample of the data:")
     print(sample)
+    print()
 
 
 def help():
@@ -58,7 +59,7 @@ def help():
         " for a specific training and functions might not be as generic as you like. Below is a list of helper"
         "functions available:"
     )
-    for func in globals():
-        if not str(func).startswith("__"):
-            print(f" - {func}")
+    for var, value in globals().items():
+        if not str(var).startswith("__") and callable(value):
+            print(f" - {var}")
     print("\n\nFor more information run `function_name?` in seperate cell. For example `help?`")
