@@ -23,10 +23,11 @@ def plot_specific_image(n, images, labels=None, predictions=None):
 
 
 def explain(variable, name=""):
+    print()
     print(f"Explanation of variable {name}")
     print("===============================")
     print(f"The type of this variable is {type(variable)}")
-    shaped = True
+
     try:
         print(f"The dimensions of this variable are {variable.shape}")
     except AttributeError:
@@ -34,11 +35,8 @@ def explain(variable, name=""):
             print(f"The length of this variable is '{len(variable)}'")
         except TypeError:
             print(f"The dimensions of this variable are unknown, meaning it is either 0 dimensional or complex")
-            shaped = False
-    if shaped:
-        sample = str(variable[0])
-    else:
-        sample = str(variable)
+
+    sample = str(variable)
     if len(sample) > 77:
         sample = sample[:77] + "..."
     print("Sample of the data:")
@@ -54,10 +52,11 @@ def help():
     help()
     """
     print(
-        "Welcome!\n"
+        "\n"
+        "WELCOME!\n"
         "This library contains various functions to help you keep your notebooks straightforward. It has been developed"
-        " for a specific training and functions might not be as generic as you like. Below is a list of helper"
-        "functions available:"
+        " for a specific training and functions might not be as generic as you like.\n"
+        "Below is a list of helper-functions available:"
     )
     for var, value in globals().items():
         if not str(var).startswith("__") and callable(value):
