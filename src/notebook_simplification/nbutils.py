@@ -3,17 +3,45 @@ import matplotlib.pyplot as plt
 
 
 def discretize_predictions(predictions):
+    """
+    Transform a Series of predictions with shape [number_of_predictions x possible_prediction_outcomes] to a simplified
+    series of predictions with shape [number_of_predictions].
+
+    :example:
+    prediction_1 = [0, 0, 0, 1]                          # 4 possible outcomes
+    prediction_2 = [1, 0, 0, 0]
+    all_predictions = [prediction_1, prediction_2]       # shape = [2 x 4]
+    discretize_predictions(all_predictions)
+    > [3, 0]                                             # shape = [2]
+
+    :param predictions: matrix (numpy.ndarray or similar)
+    """
     return np.argmax(predictions, axis=1)
 
 
 def plot_random_image(images, labels=None, predictions=None):
+    """
+    Grab a random image and plot it. If labels or predictions are given then those are in the title.
+
+    :param images: list of images
+    :param labels: optional list of labels, same length as images
+    :param predictions: optional list of predictions, same length as images
+    """
     n = np.random.randint(0, len(images))
     plot_specific_image(n, images, labels, predictions)
 
 
 def plot_specific_image(n, images, labels=None, predictions=None):
+    """
+    Grab a specific image and plot it. If labels or predictions are given then those are in the title.
+
+    :param n: the index of the image to plot
+    :param images: list of images
+    :param labels: optional list of labels, same length as images
+    :param predictions: optional list of predictions, same length as images
+    """
     plt.figure()
-    plt.imshow(images[n])
+    plt.imshow(images[n], cmap='gray')
     title = f"Image id: {n}"
     if labels is not None:
         title += f" - Truth: {labels[n]}"
@@ -23,6 +51,12 @@ def plot_specific_image(n, images, labels=None, predictions=None):
 
 
 def explain(variable, name=""):
+    """
+    Show a brief overview of a variable, including type, size and a sample.
+
+    :param variable: any variable
+    :param name: optional name of the variable used in the title
+    """
     print()
     print(f"Explanation of variable {name}")
     print("===============================")
