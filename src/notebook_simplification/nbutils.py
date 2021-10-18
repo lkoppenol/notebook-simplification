@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
+import random
 
 
 def discretize_predictions(predictions):
@@ -48,7 +49,7 @@ def plot_specific_image(n, images, labels=None, predictions=None):
     if labels is not None:
         title += f" - Truth: {labels[n]}"
     if predictions is not None:
-        title += f" - Truth: {predictions[n]}"
+        title += f" - Prediction: {predictions[n]}"
     plt.title(title)
 
 
@@ -166,3 +167,51 @@ def plot_confusion_matrix(truths, predictions, labels=None):
     ax = sn.heatmap(cm, annot=True, xticklabels=xticklabels, yticklabels=yticklabels, fmt="d")
     ax.set(xlabel='Prediction', ylabel='Truth')
     ax.set_title("Confusion Matrix")
+
+
+def zero_pad(image, new_x=56, new_y=56):
+    """
+    Increase the size of an image by padding to zeros to match new size
+
+    :param image: an image (for example 28x28 MNIST)
+    :param new_x: new x size in pixels
+    :param new_y: new y size in pixels
+    :return: enlarged image
+    """
+    old_x, old_y = image.shape
+
+    pos_x = random.randint(0, new_x - old_x)
+    pos_y = random.randint(0, new_y - old_y)
+
+    z = np.zeros((new_x, new_y))
+    z[pos_x: pos_x + old_x, pos_y: pos_y + old_y] = image
+
+    return z
+
+
+def plot_image(image, label=None, prediction=None):
+    """
+    Plot a single image
+
+    :param image: the image
+    :param label: optional label
+    :param prediction: optional prediction
+    """
+    plt.imshow(image, cmap='gray')
+    title = ""
+    if label is not None:
+        title += f" - Truth: {label}"
+    if prediction is not None:
+        title += f" - Prediction: {prediction}"
+    plt.title(title)
+
+
+def get_filters(layer):
+    """
+    Return a list of the filters of a convolutional layer
+
+    :param layer: the layer (model.layers[n])
+    :return: a list of filters
+    """
+    filters, biases = layer.get_weights()
+    return [filters[:, :, 0, f] for f in range(filters.shape[3])]
