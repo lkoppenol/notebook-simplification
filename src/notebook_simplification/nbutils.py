@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sn
 
 
 def discretize_predictions(predictions):
@@ -96,3 +98,71 @@ def help():
         if not str(var).startswith("__") and callable(value):
             print(f" - {var}")
     print("\n\nFor more information run `function_name?` in seperate cell. For example `help?`")
+
+
+def __sample_by_label(x, y, label, ratio):
+    indexes = np.flatnonzero(y == label)
+    count = int(len(indexes) * ratio)
+    sampled_indexes = np.random.choice(indexes, count, replace=False)
+    return x[sampled_indexes], y[sampled_indexes]
+
+
+def sample(x, y, target: dict):
+    """
+    Given a dataset and labels, sample ratio's of specific classes given a dictionary.
+
+    :param x: dataset
+    :param y: labels
+    :param target: dict with {label: ratio} e.g. {3: 0.99}
+    :return: new x, new y
+    """
+    rebalanced_x, rebalanced_y = [], []
+    for label, ratio in target.items():
+        sampled_x, sampled_y = __sample_by_label(x, y, label, ratio)
+        rebalanced_x.append(sampled_x)
+        rebalanced_y.append(sampled_y)
+    return np.concatenate(rebalanced_x), np.concatenate(rebalanced_y)
+
+
+def histogram(classes):
+    """
+    Draw a histogram for the MNIST dataset
+
+    :param classes: labels
+    """
+    plt.figure(figsize=(10, 5))
+    plt.title('Value counts')
+    plt.hist(classes, bins=range(10), rwidth=0.8, align='left')
+    plt.xticks(range(10))
+
+
+def replace(classes, old, new):
+    """
+    Replace a value in an array or list
+
+    :param classes: array or list of labels
+    :param old: value to replace
+    :param new: value to replace with
+    :return: new array
+    """
+    return np.where(classes == old, new, classes)
+
+
+def plot_confusion_matrix(truths, predictions, labels=None):
+    """
+    Plot a confusion matrix
+
+    :param truths: list of should-be values
+    :param predictions: list of predicted values
+    :param labels: names of classes to write on the side
+    """
+    cm = confusion_matrix(truths, predictions)
+    if labels:
+        xticklabels = labels
+        yticklabels = labels
+    else:
+        xticklabels = "auto"
+        yticklabels = "auto"
+    ax = sn.heatmap(cm, annot=True, xticklabels=xticklabels, yticklabels=yticklabels, fmt="d")
+    ax.set(xlabel='Prediction', ylabel='Truth')
+    ax.set_title("Confusion Matrix")
