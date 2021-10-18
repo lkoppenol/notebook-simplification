@@ -197,6 +197,7 @@ def plot_image(image, label=None, prediction=None):
     :param label: optional label
     :param prediction: optional prediction
     """
+    plt.figure()
     plt.imshow(image, cmap='gray')
     title = ""
     if label is not None:
